@@ -2,12 +2,12 @@
  * Register Page
  */
 
-import { useContext, useState } from 'react';
+import { useContext, useState, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Film, Mail, Lock, User, ArrowRight, Check } from 'lucide-react';
 import AuthContext from '../../context/AuthContext';
 import { useForm } from '../../hooks';
-import { validateRegistrationForm } from '../../utils/validators';
+import { validateRegistrationForm, validateEmail, validatePassword, validateUsername } from '../../utils/validators';
 import { ErrorAlert, SuccessAlert } from '../../components/Common';
 import MainLayout from '../../components/Layout/MainLayout';
 
@@ -17,7 +17,29 @@ const RegisterPage = () => {
   const [formErrors, setFormErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState('');
 
-  const { values, handleChange, handleSubmit, isSubmitting } = useForm(
+  const validateField = useCallback((name, value, allValues) => {
+    if (name === 'username') {
+      const result = validateUsername(value);
+      setFormErrors((prev) => ({ ...prev, username: result.isValid ? '' : result.error }));
+    }
+    if (name === 'email') {
+      const result = validateEmail(value);
+      setFormErrors((prev) => ({ ...prev, email: result.isValid ? '' : result.error }));
+    }
+    if (name === 'password') {
+      const result = validatePassword(value);
+      setFormErrors((prev) => ({ ...prev, password: result.isValid ? '' : result.error }));
+    }
+    if (name === 'confirmPassword') {
+      if (value !== allValues.password) {
+        setFormErrors((prev) => ({ ...prev, confirmPassword: 'Passwords do not match' }));
+      } else {
+        setFormErrors((prev) => ({ ...prev, confirmPassword: '' }));
+      }
+    }
+  }, []);
+
+  const { values, handleChange: baseHandleChange, handleSubmit, isSubmitting } = useForm(
     { username: '', email: '', password: '', confirmPassword: '' },
     async (formData) => {
       const validation = validateRegistrationForm(formData);
@@ -36,6 +58,11 @@ const RegisterPage = () => {
       }
     }
   );
+
+  const handleChange = (e) => {
+    baseHandleChange(e);
+    validateField(e.target.name, e.target.value, { ...values, [e.target.name]: e.target.value });
+  };
 
   const passwordRequirements = [
     { label: 'At least 8 characters', met: values.password.length >= 8 },

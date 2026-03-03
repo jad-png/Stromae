@@ -1,18 +1,21 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import { LoadingSpinner } from './components/Common';
 
-import HomePage from './pages/Home/HomePage';
-import LoginPage from './pages/Auth/LoginPage';
-import RegisterPage from './pages/Auth/RegisterPage';
-import VideoDetailsPage from './pages/VideoDetails/VideoDetailsPage';
-import WatchlistPage from './pages/Watchlist/WatchlistPage';
-import UserProfilePage from './pages/UserProfile/UserProfilePage';
+const HomePage = lazy(() => import('./pages/Home/HomePage'));
+const LoginPage = lazy(() => import('./pages/Auth/LoginPage'));
+const RegisterPage = lazy(() => import('./pages/Auth/RegisterPage'));
+const VideoDetailsPage = lazy(() => import('./pages/VideoDetails/VideoDetailsPage'));
+const WatchlistPage = lazy(() => import('./pages/Watchlist/WatchlistPage'));
+const UserProfilePage = lazy(() => import('./pages/UserProfile/UserProfilePage'));
 
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <Suspense fallback={<LoadingSpinner message="Loading..." />}>
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
@@ -70,6 +73,7 @@ function App() {
             }
           />
         </Routes>
+        </Suspense>
       </AuthProvider>
     </BrowserRouter>
   );

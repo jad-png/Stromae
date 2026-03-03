@@ -2,12 +2,12 @@
  * Login Page
  */
 
-import { useContext, useState } from 'react';
+import { useContext, useState, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Film, Mail, Lock, ArrowRight } from 'lucide-react';
 import AuthContext from '../../context/AuthContext';
 import { useForm } from '../../hooks';
-import { validateLoginForm } from '../../utils/validators';
+import { validateLoginForm, validateEmail, validatePassword } from '../../utils/validators';
 import { ErrorAlert, SuccessAlert } from '../../components/Common';
 import MainLayout from '../../components/Layout/MainLayout';
 
@@ -17,7 +17,21 @@ const LoginPage = () => {
   const [formErrors, setFormErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState('');
 
-  const { values, handleChange, handleSubmit, isSubmitting } = useForm(
+  const validateField = useCallback((name, value) => {
+    if (name === 'email') {
+      const result = validateEmail(value);
+      setFormErrors((prev) => ({ ...prev, email: result.isValid ? '' : result.error }));
+    }
+    if (name === 'password') {
+      if (!value) {
+        setFormErrors((prev) => ({ ...prev, password: 'Password is required' }));
+      } else {
+        setFormErrors((prev) => ({ ...prev, password: '' }));
+      }
+    }
+  }, []);
+
+  const { values, handleChange: baseHandleChange, handleSubmit, isSubmitting } = useForm(
     { email: '', password: '' },
     async (formData) => {
       const validation = validateLoginForm(formData);
@@ -36,6 +50,11 @@ const LoginPage = () => {
       }
     }
   );
+
+  const handleChange = (e) => {
+    baseHandleChange(e);
+    validateField(e.target.name, e.target.value);
+  };
 
   return (
     <MainLayout>

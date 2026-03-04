@@ -78,15 +78,8 @@ export const VIDEO_TYPES = {
   DOCUMENTAIRE: 'DOCUMENTAIRE'
 };
 
-export const VIDEO_CATEGORIES = [
-  { id: '1', name: 'Action' },
-  { id: '2', name: 'Comédie' },
-  { id: '3', name: 'Drame' },
-  { id: '4', name: 'Science-Fiction' },
-  { id: '5', name: 'Thriller' },
-  { id: '6', name: 'Documentaire' },
-  { id: '7', name: 'Horreur' }
-];
+// Re-exported from mocks for backward compatibility
+export { VIDEO_CATEGORIES } from '../mocks/categories.js';
 
 export const VALIDATION_RULES = {
   username: {

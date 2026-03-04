@@ -7,18 +7,10 @@ import { generateId } from '../utils/helpers.js';
 import { setStorageItem, getStorageItem, removeStorageItem } from '../utils/storage.js';
 import { validateEmail, validatePassword, validateUsername } from '../utils/validators.js';
 import { STORAGE_KEYS, ERROR_MESSAGES, SUCCESS_MESSAGES } from '../types/index.js';
+import { mockUsers as defaultMockUsers } from '../mocks/users.js';
 
-// Mock users database - In production, this would be an API call with proper backend validation
-let mockUsers = [
-  {
-    id: '1',
-    username: 'demouser',
-    email: 'demo@example.com',
-    password: 'Demo@12345', // Hashed in production
-    createdAt: new Date(),
-    updatedAt: new Date()
-  }
-];
+// Shadow the imported default so the service can mutate its local copy
+let mockUsers = [...defaultMockUsers];
 
 /**
  * Initialize mock users in storage

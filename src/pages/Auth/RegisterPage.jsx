@@ -4,7 +4,7 @@
 
 import { useContext, useState, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Film, Mail, Lock, User, ArrowRight, Check } from 'lucide-react';
+import { Film, Mail, Lock, User, ArrowRight } from 'lucide-react';
 import AuthContext from '../../context/AuthContext';
 import { useForm } from '../../hooks';
 import { validateRegistrationForm, validateEmail, validatePassword, validateUsername } from '../../utils/validators';
@@ -63,13 +63,6 @@ const RegisterPage = () => {
     baseHandleChange(e);
     validateField(e.target.name, e.target.value, { ...values, [e.target.name]: e.target.value });
   };
-
-  const passwordRequirements = [
-    { label: 'At least 8 characters', met: values.password.length >= 8 },
-    { label: 'Uppercase letter', met: /[A-Z]/.test(values.password) },
-    { label: 'A number', met: /\d/.test(values.password) },
-    { label: 'Special character', met: /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(values.password) },
-  ];
 
   return (
     <MainLayout>
@@ -142,18 +135,6 @@ const RegisterPage = () => {
                 </div>
                 {formErrors.password && <p className="mt-1 text-xs text-red-400">{formErrors.password}</p>}
               </div>
-
-              {/* Password strength indicators */}
-              {values.password && (
-                <div className="grid grid-cols-2 gap-2">
-                  {passwordRequirements.map(({ label, met }) => (
-                    <div key={label} className="flex items-center gap-1.5">
-                      <Check className={`h-3 w-3 ${met ? 'text-emerald-400' : 'text-gray-600'}`} />
-                      <span className={`text-[11px] ${met ? 'text-emerald-400' : 'text-gray-600'}`}>{label}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
 
               {/* Confirm Password */}
               <div>

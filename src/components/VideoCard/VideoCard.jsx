@@ -3,18 +3,15 @@
  */
 
 import { Link } from 'react-router-dom';
-import { useContext, useState } from 'react';
-import { Play, BookmarkPlus, BookmarkCheck, Star, Clock, Calendar } from 'lucide-react';
+import { useContext } from 'react';
+import { Play, BookmarkPlus, BookmarkCheck, Clock, Calendar } from 'lucide-react';
 import AuthContext from '../../context/AuthContext';
 import { useWatchlist } from '../../hooks';
-import { Rating } from '../Common';
 import { getCategoryById } from '../../services/VideoService';
 
-const VideoCard = ({ video, onRatingChange }) => {
+const VideoCard = ({ video }) => {
   const { user, isAuthenticated } = useContext(AuthContext);
   const { isInWatchlist, addToWatchlist, removeFromWatchlist } = useWatchlist(user?.id);
-  const [isRating, setIsRating] = useState(false);
-  const [userRating, setUserRating] = useState(0);
 
   const category = getCategoryById(video.categoryId);
   const inWatchlist = isInWatchlist(video.id);
@@ -36,12 +33,6 @@ const VideoCard = ({ video, onRatingChange }) => {
     } else {
       addToWatchlist(video.id);
     }
-  };
-
-  const handleRating = (rating) => {
-    setUserRating(rating);
-    setIsRating(false);
-    onRatingChange?.(video.id, rating);
   };
 
   return (
@@ -69,14 +60,6 @@ const VideoCard = ({ video, onRatingChange }) => {
             <span className={`badge ${typeColors[video.type] || 'badge-brand'}`}>
               {video.type}
             </span>
-          </div>
-
-          {/* Rating badge */}
-          <div className="absolute top-3 right-3">
-            <div className="flex items-center gap-1 rounded-lg bg-gray-950/70 backdrop-blur-sm px-2 py-1">
-              <Star className="h-3.5 w-3.5 text-sunset-400 fill-sunset-400" />
-              <span className="text-xs font-semibold text-white">{video.rating}</span>
-            </div>
           </div>
 
           {/* Bottom info */}
@@ -108,14 +91,6 @@ const VideoCard = ({ video, onRatingChange }) => {
 
           <div className="flex items-center gap-1.5 shrink-0">
             <button
-              onClick={() => setIsRating(!isRating)}
-              className="rounded-lg p-1.5 text-gray-500 hover:bg-sunset-500/10 hover:text-sunset-400 transition-colors"
-              title="Rate"
-            >
-              <Star className="h-4 w-4" />
-            </button>
-
-            <button
               onClick={handleWatchlistToggle}
               disabled={!isAuthenticated}
               className={`rounded-lg p-1.5 transition-colors ${
@@ -133,14 +108,6 @@ const VideoCard = ({ video, onRatingChange }) => {
             </button>
           </div>
         </div>
-
-        {/* Rating dropdown */}
-        {isRating && (
-          <div className="border-t border-gray-800/50 px-4 py-3 animate-slide-down">
-            <p className="text-xs text-gray-400 mb-2">Rate this video</p>
-            <Rating value={userRating} onChange={handleRating} />
-          </div>
-        )}
       </div>
     </div>
   );

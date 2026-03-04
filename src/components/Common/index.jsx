@@ -3,7 +3,7 @@
  * Reusable building blocks for the application
  */
 
-import { X, AlertCircle, CheckCircle, Loader2, Frown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, AlertCircle, CheckCircle, Loader2, Frown } from 'lucide-react';
 
 // Error Alert
 export const ErrorAlert = ({ message, onClose }) => {
@@ -123,54 +123,4 @@ export const Rating = ({ value = 0, max = 10, onChange, readOnly = false }) => {
   );
 };
 
-// Pagination
-export const Pagination = ({ currentPage, totalPages, onPageChange }) => {
-  if (totalPages <= 1) return null;
 
-  const getVisiblePages = () => {
-    const pages = [];
-    const maxVisible = 5;
-    let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
-    const end = Math.min(totalPages, start + maxVisible - 1);
-    start = Math.max(1, end - maxVisible + 1);
-
-    for (let i = start; i <= end; i++) {
-      pages.push(i);
-    }
-    return pages;
-  };
-
-  return (
-    <div className="flex items-center justify-center gap-2 mt-10">
-      <button
-        onClick={() => onPageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-        className="btn-ghost btn-sm rounded-lg disabled:opacity-30"
-      >
-        <ChevronLeft className="h-4 w-4" />
-      </button>
-
-      {getVisiblePages().map((page) => (
-        <button
-          key={page}
-          onClick={() => onPageChange(page)}
-          className={`h-9 w-9 rounded-lg text-sm font-medium transition-all duration-200 ${
-            currentPage === page
-              ? 'bg-brand-500 text-white shadow-lg shadow-brand-500/25'
-              : 'text-gray-400 hover:bg-gray-800 hover:text-gray-200'
-          }`}
-        >
-          {page}
-        </button>
-      ))}
-
-      <button
-        onClick={() => onPageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-        className="btn-ghost btn-sm rounded-lg disabled:opacity-30"
-      >
-        <ChevronRight className="h-4 w-4" />
-      </button>
-    </div>
-  );
-};
